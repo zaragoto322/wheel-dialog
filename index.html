@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=`, initial-scale=1.0">
+    <title>wheel-dialog</title>
+
+    <style>
+        .container1 {
+            box-shadow: 0 0 4px 0px rgba(0, 0, 0, 0.3);
+            padding: 16px;
+            max-width: 700px;
+            margin: 30px auto;
+        }
+
+        .btn-open {
+            padding: 8px 15px;
+            color: #303030;
+            outline: none;
+            border-radius: 4px;
+            border: 1px solid #aaa;
+        }
+
+        .btn-open:hover {
+            color: lightskyblue;
+        }
+
+        .button {
+            cursor: pointer;
+        }
+
+        .button:hover {
+            color: lightskyblue;
+            border-color: lightskyblue;
+        }
+
+        .container2 {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 100vw;
+            background-color: rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            display: none;
+            transition: all .5s;
+        }
+
+        .container2.appear {
+            display: block;
+
+        }
+
+        .container2.show {
+            opacity: 1;
+
+        }
+
+        .dialog {
+            margin: 70px auto;
+            max-width: 600px;
+            border-radius: 4px;
+            padding: 15px;
+            background-color: white;
+            box-shadow: 0 0 2px 0px rgba(0, 0, 0, 0.3);
+            transform: translateY(-100%);
+            opacity: 0;
+            transition: all .5s;
+        }
+
+        .container2.show .dialog {
+            opacity: 1;
+            transform: translateY(40px);
+        }
+
+        .head {
+            margin-bottom: 10px;
+            display: flex;
+            font-size: 18px;
+        }
+
+        .head .close {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: none;
+            outline: none;
+            margin-left: auto;
+            background-color: transparent;
+
+
+        }
+
+        .head .close::before,
+        .head .close::after {
+            position: absolute;
+            content: '';
+            height: 1px;
+            width: 10px;
+            display: block;
+            border-top: 1px solid black;
+            transform: rotate(45deg);
+        }
+
+        .head .close::after {
+            transform: rotate(-45deg);
+        }
+
+
+
+
+        .body {
+            margin-bottom: 20px;
+        }
+
+        .foot {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .btn-cancle,
+        .btn-confirm {
+            padding: 8px 12px;
+            margin-left: 10px;
+            outline: none;
+            font-size: 14px;
+            border-radius: 4px;
+            border: 1px solid #303030;
+
+        }
+
+        .btn-cancle {
+            background-color: lightgray;
+            border-color: lightgray;
+        }
+
+        .btn-confirm {
+            color: white;
+            background-color: lightskyblue;
+            border-color: lightskyblue;
+        }
+
+        .btn-confirm:hover {
+            color: white;
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="container1">
+        <h2>Dialog</h2>
+        <button class="button btn-open">打开弹窗</button>
+    </div>
+    <div class="container2">
+        <div class="dialog">
+            <div class="head">提示<button class="button close"></button></div>
+            <div class="body">这是一段消息</div>
+            <div class="foot">
+                <button class="button btn-cancle">取消</button>
+                <button class="button btn-confirm">确定</button>
+            </div>
+        </div>      
+    </div>
+
+<script>
+    class Dialog {
+        constructor($root, options = {}) {
+            this.$root = $root
+            this.options = options
+            this.onCancel = options.onCancel || function(){}
+            this.onOk = options.onOk || function(){}
+            this.bind()
+        }
+
+        bind() {
+            let self = this
+            this.$root.querySelector('.close').onclick = function() {
+                self.hide()
+                self.onCancel()
+            }
+
+            this.$root.querySelector('.btn-cancle').onclick = function() {
+                self.hide()
+                self.onCancel()
+            }
+
+            this.$root.querySelector('.btn-confirm').onclick = function() {
+                self.hide()
+                self.onOk()
+            }
+        }
+
+        hide() {
+            let self = this
+            this.$root.classList.remove('show')
+            setTimeout(() => self.$root.classList.remove('appear'), 600)
+        }
+
+        show() {
+            let self = this
+            this.$root.classList.add('appear')
+            setTimeout(() => self.$root.classList.add('show'))
+        }
+
+
+    }
+
+    let dialog = new Dialog(document.querySelector('.container2'), {
+      onOk() {
+        console.log('用户点了ok')
+      },
+      onCancel() {
+        console.log('用户点了取消')
+      }
+    })
+
+    document.querySelector('.btn-open').onclick = function() {
+        dialog.show()
+    }
+
+
+</script>
+</body>
+</html>
